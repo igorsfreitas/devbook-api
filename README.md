@@ -13,7 +13,7 @@
 
 ## Description
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Devbook API with <a href="https://go.dev/" target="_blank">Golang</a>
 
 ## Add missing and remove unused modules
 
