@@ -9,15 +9,15 @@ import (
 
 // Connect opens a connection with the database and returns it
 func Connect() (*sql.DB, error) {
-	db, erro := sql.Open("postgres", config.ConnectionString)
+	db, err := sql.Open("postgres", config.ConnectionString)
 
-	if erro != nil {
-		return nil, erro
+	if err != nil {
+		return nil, err
 	}
 
-	if erro = db.Ping(); erro != nil {
+	if err = db.Ping(); err != nil {
 		db.Close()
-		return nil, erro
+		return nil, err
 	}
 
 	return db, nil

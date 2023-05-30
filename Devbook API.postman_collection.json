@@ -1,0 +1,83 @@
+{
+	"info": {
+		"_postman_id": "a1bf2fbb-862e-491b-8c3f-3eed5bd80e0f",
+		"name": "Devbook API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1425161"
+	},
+	"item": [
+		{
+			"name": "POST User",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Igor\",\n    \"nick\": \"igorsfreiitas\",\n    \"email\": \"igor@teste.com\",\n    \"password\": \"123456\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:5000/user",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "POST Usuário SUCCESS",
+					"originalRequest": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"nome\": \"Igor\",\n    \"email\": \"igor@teste.com\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:5000/usuarios",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"status": "Created",
+					"code": 201,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "Date",
+							"value": "Fri, 26 May 2023 18:24:35 GMT"
+						},
+						{
+							"key": "Content-Length",
+							"value": "36"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain; charset=utf-8"
+						}
+					],
+					"cookie": [],
+					"body": "Usuário inserido com sucesso! ID: 7"
+				}
+			]
+		}
+	]
+}
