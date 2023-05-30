@@ -2,11 +2,10 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
+	response "github.com/igorsfreitas/devbook-api/src/commons/responses"
 	"github.com/igorsfreitas/devbook-api/src/db"
 	"github.com/igorsfreitas/devbook-api/src/models"
 	"github.com/igorsfreitas/devbook-api/src/repositories"
@@ -16,26 +15,32 @@ import (
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	requestBody, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Fatal(err)
+		response.Error(w, http.StatusUnprocessableEntity, err)
+		return
 	}
 
-	var usuario models.User
-	if err = json.Unmarshal(requestBody, &usuario); err != nil {
-		log.Fatal(err)
+	var user models.User
+	if err = json.Unmarshal(requestBody, &user); err != nil {
+		response.Error(w, http.StatusBadRequest, err)
+		return
 	}
 
 	db, err := db.Connect()
 	if err != nil {
-		log.Fatal(err)
+		response.Error(w, http.StatusInternalServerError, err)
+		return
 	}
+	defer db.Close()
 
 	repository := repositories.NewUserRepository(db)
-	userID, err := repository.Create(usuario)
+	userID, err := repository.Create(user)
 	if err != nil {
-		log.Fatal(err)
+		response.Error(w, http.StatusInternalServerError, err)
+		return
 	}
 
-	w.Write([]byte(fmt.Sprintf("Usuário inserido com sucesso! ID: %d", userID)))
+	user.ID = userID
+	response.JSON(w, http.StatusCreated, user)
 }
 
 // FindUsers busca todos os usuários
