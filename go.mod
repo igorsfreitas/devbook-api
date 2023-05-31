@@ -11,3 +11,5 @@ require (
 require github.com/badoux/checkmail v1.2.1
 
 require golang.org/x/crypto v0.9.0
+
+require github.com/dgrijalva/jwt-go v3.2.0+incompatible

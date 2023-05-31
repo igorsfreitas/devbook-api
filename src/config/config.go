@@ -15,6 +15,9 @@ var (
 
 	// Port is the port to listen on
 	Port = 0
+
+	// SecretKey is the secret key to generate JWT tokens
+	SecretKey []byte
 )
 
 // Load config from file
@@ -36,4 +39,6 @@ func Load() {
 		os.Getenv("DB_HOST"),
 		os.Getenv("DB_NAME"),
 	)
+
+	SecretKey = []byte(os.Getenv("SECRET_KEY"))
 }
