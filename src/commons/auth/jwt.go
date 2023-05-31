@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -34,7 +35,7 @@ func ValidateToken(r *http.Request) error {
 		return nil
 	}
 
-	return errors.New("Token inválido")
+	return errors.New("token inválido")
 }
 
 func extractToken(r *http.Request) string {
@@ -49,8 +50,28 @@ func extractToken(r *http.Request) string {
 
 func extractKey(token *jwt.Token) (interface{}, error) {
 	if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-		return nil, fmt.Errorf("Método de assinatura inesperado! %v", token.Header["alg"])
+		return nil, fmt.Errorf("método de assinatura inesperado! %v", token.Header["alg"])
 	}
 
 	return config.SecretKey, nil
+}
+
+// ExtractUserID extracts the user ID from the token
+func ExtractUserID(r *http.Request) (uint64, error) {
+	tokenString := extractToken(r)
+	token, err := jwt.Parse(tokenString, extractKey)
+	if err != nil {
+		return 0, err
+	}
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		userID, err := strconv.ParseUint(fmt.Sprintf("%.0f", claims["userID"]), 10, 64)
+		if err != nil {
+			return 0, err
+		}
+
+		return userID, nil
+	}
+
+	return 0, errors.New("token inválido")
 }
