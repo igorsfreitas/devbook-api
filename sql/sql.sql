@@ -9,7 +9,7 @@ CREATE TABLE public.users (
 	"name" varchar(50) NOT NULL,
 	nick varchar(50) NOT NULL,
 	email varchar(50) NOT NULL,
-	"password" varchar(50) NOT NULL,
+	"password" varchar(100) NOT NULL,
 	created_at timestamp NOT NULL DEFAULT now(),
 	CONSTRAINT users_email_unique UNIQUE (email),
 	CONSTRAINT users_nick_unique UNIQUE (nick),
