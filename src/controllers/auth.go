@@ -46,7 +46,11 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	token, _ := auth.GenerateJWT(userOnDatabase.ID)
+	token, err := auth.GenerateJWT(userOnDatabase.ID)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
 
 	response.JSON(w, http.StatusOK, token)
 }

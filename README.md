@@ -36,3 +36,4 @@ $ go build
 - Add migrations in the project
 - Add dockerfile for development and production envoirments
 - Add hot reload in the project
+- Improve Postman collection with envs and scripts to provide variables
