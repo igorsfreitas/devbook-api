@@ -15,3 +15,11 @@ CREATE TABLE public.users (
 	CONSTRAINT users_nick_unique UNIQUE (nick),
 	CONSTRAINT users_pk PRIMARY KEY (id)
 );
+
+CREATE TABLE public.followers (
+	user_id int4 NOT NULL,
+	follower_id int4 NOT NULL,
+	CONSTRAINT followers_user_id_fkey FOREIGN KEY (user_id) REFERENCES users(id),
+	CONSTRAINT followers_follower_id_fkey FOREIGN KEY (follower_id) REFERENCES users(id),
+	CONSTRAINT followers_pk PRIMARY KEY (user_id, follower_id)
+);
