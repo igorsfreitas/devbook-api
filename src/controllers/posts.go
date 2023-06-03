@@ -170,5 +170,43 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 
 // DeletePost deletes a post
 func DeletePost(w http.ResponseWriter, r *http.Request) {
+	userID, err := auth.ExtractUserID(r)
+	if err != nil {
+		response.Error(w, http.StatusUnauthorized, err)
+		return
+	}
+
+	params := mux.Vars(r)
+	postID, err := strconv.ParseUint(params["postId"], 10, 64)
+	if err != nil {
+		response.Error(w, http.StatusBadRequest, err)
+		return
+	}
+
+	db, err := db.Connect()
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+	defer db.Close()
+
+	repository := repositories.NewPostRepository(db)
+	postOnDB, err := repository.GetPost(postID)
+	if err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	if postOnDB.AuthorID != userID {
+		response.Error(w, http.StatusForbidden, errors.New("you can't delete a post that is not yours"))
+		return
+	}
+
+	if err = repository.Delete(postID); err != nil {
+		response.Error(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.JSON(w, http.StatusNoContent, nil)
 
 }
