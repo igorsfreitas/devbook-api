@@ -65,3 +65,56 @@ func (repository Posts) GetPost(postID uint64) (models.Post, error) {
 
 	return post, nil
 }
+
+// GetPosts returns all posts from the user and the users that he follows
+func (repository Posts) GetPosts(userID uint64) ([]models.Post, error) {
+	linhas, err := repository.db.Query(
+		`
+			SELECT DISTINCT p.*, u.nick FROM posts p
+			INNER JOIN users u ON u.id = p.author_id
+			INNER JOIN followers f ON p.author_id = f.user_id
+			WHERE u.id = $1 OR f.follower_id = $1
+			ORDER BY 1 DESC
+		`,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var posts []models.Post
+	for linhas.Next() {
+		var post models.Post
+		if err = linhas.Scan(
+			&post.ID,
+			&post.AuthorID,
+			&post.Title,
+			&post.Content,
+			&post.Likes,
+			&post.CreatedAt,
+			&post.AuthorNick,
+		); err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}
+
+// Update updates a post
+func (repository Posts) Update(postID uint64, post models.Post) error {
+	statement, err := repository.db.Prepare("UPDATE posts SET title = $1, content = $2 WHERE id = $3")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(post.Title, post.Content, postID); err != nil {
+		return err
+	}
+
+	return nil
+}
