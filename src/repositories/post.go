@@ -133,3 +133,40 @@ func (repository Posts) Delete(postID uint64) error {
 
 	return nil
 }
+
+// GetPostsByUser returns all posts from a user
+func (repository Posts) GetPostsByUser(userID uint64) ([]models.Post, error) {
+	linhas, err := repository.db.Query(
+		`
+			SELECT p.*, u.nick FROM posts p
+			JOIN users u ON u.id = p.author_id
+			WHERE u.id = $1
+			ORDER BY 1 DESC
+		`,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer linhas.Close()
+
+	var posts []models.Post
+	for linhas.Next() {
+		var post models.Post
+		if err = linhas.Scan(
+			&post.ID,
+			&post.AuthorID,
+			&post.Title,
+			&post.Content,
+			&post.Likes,
+			&post.CreatedAt,
+			&post.AuthorNick,
+		); err != nil {
+			return nil, err
+		}
+
+		posts = append(posts, post)
+	}
+
+	return posts, nil
+}

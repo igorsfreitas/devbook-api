@@ -38,3 +38,4 @@ $ go build
 - Add hot reload in the project
 - Improve Postman collection with envs and scripts to provide variables
 - Add unit tests on the project
+- Add SQLC
