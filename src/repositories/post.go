@@ -170,3 +170,40 @@ func (repository Posts) GetPostsByUser(userID uint64) ([]models.Post, error) {
 
 	return posts, nil
 }
+
+// Like adds a like to a post
+func (repository Posts) Like(postID uint64) error {
+	statement, err := repository.db.Prepare("UPDATE posts SET likes = likes + 1 WHERE id = $1")
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(postID); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Unlike removes a like from a post if it likes is greater than 0
+func (repository Posts) Unlike(postID uint64) error {
+	statement, err := repository.db.Prepare(`
+		UPDATE posts 
+			SET likes = 
+				CASE WHEN likes > 0 
+					THEN likes - 1 
+					ELSE 0 
+				END 
+			WHERE id = $1`)
+	if err != nil {
+		return err
+	}
+	defer statement.Close()
+
+	if _, err = statement.Exec(postID); err != nil {
+		return err
+	}
+
+	return nil
+}
